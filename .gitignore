@@ -131,3 +131,4 @@ dmypy.json
 .pyre/
 credentials.json
 token.json
+.idea
