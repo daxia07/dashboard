@@ -11,6 +11,11 @@ except ImportError as e:
     print('Error while importing packages', e)
 
 
+def write_to_db(mail):
+
+    pass
+
+
 def db_init():
     # loop over all emails and store in DB
     pass
