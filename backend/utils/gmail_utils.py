@@ -116,12 +116,12 @@ def get_email(service=None):
         logger.info(f'Subject: {subject}')
         if 'globaldb ---> taxanalyser (uat) copy for security' in subject:
             continue
-        body = parse_body(payload, service, msg)
-        logger.info(f'Body: {body}')
-        # skip uat emails
+            # skip uat emails
         if subject == 'Tax Analyser Mercer Load (Production)' and 'sender' not in body.keys():
             # special email to skip
             logger.warning(f'Skipping email with no body for {subject}')
+        body = parse_body(payload, service, msg)
+        logger.info(f'Body: {body}')
         body['subject'] = subject
         yield body
 
