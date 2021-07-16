@@ -10,6 +10,17 @@ try:
 except ImportError as e:
     print('Error while importing packages', e)
 
+
+def db_init():
+    # loop over all emails and store in DB
+    pass
+
+
+def update_db():
+    # loop over all unread emails and store in DB
+    pass
+
+
 if __name__ == '__main__':
     for mail in get_email():
         print(mail)
