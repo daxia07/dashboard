@@ -10,7 +10,7 @@ from task.utils import PACK_DIR
 from task.definitions import logger
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
 
 
 def get_service():
@@ -122,12 +122,14 @@ def get_email(service=None, maxResults=200, query="is:unread label:INBOX from:gb
         payload = txt['payload']
         headers = payload['headers']
         subject = parse_subject(headers)
+        body = parse_body(payload, service, msg)
+        service.users().messages().modify(id=msg['id'], userId='me', body={'removeLabelIds': ['UNREAD']}) \
+            .execute()
         # Printing the subject, sender's email and message
         logger.info(f'Subject: {subject}')
         if 'globaldb ---> taxanalyser (uat) copy for security' in subject:
             continue
         # skip uat emails
-        body = parse_body(payload, service, msg)
         if subject == 'Tax Analyser Mercer Load (Production)' and 'sender' not in body.keys():
             # special email to skip
             logger.warning(f'Skipping email with no body for {subject}')
@@ -137,6 +139,6 @@ def get_email(service=None, maxResults=200, query="is:unread label:INBOX from:gb
 
 
 if __name__ == '__main__':
-    for mail in get_email(maxResults=200):
+    for mail in get_email():
         print(mail)
         # get_email()
