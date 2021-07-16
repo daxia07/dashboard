@@ -6,8 +6,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from backend.utils import PACK_DIR
-from backend.definitions import logger
+from task.utils import PACK_DIR
+from task.definitions import logger
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -94,16 +94,26 @@ def parse_body(payload, service, msg):
     return item
 
 
-def get_email(service=None):
+def get_email(service=None, maxResults=200, query="is:unread label:INBOX from:gbst.com"):
     if service is None:
         service = get_service()
     # https://support.google.com/mail/answer/7190
     # from:someuser@example.com rfc822msgid:<somemsgid@example.com> is:unread ?q=in:sent after:1388552400 before:1391230800
-    result = service.users().messages().list(maxResults=2000,
+    result = service.users().messages().list(maxResults=maxResults,
                                              userId='me',
-                                             q="is:unread label:INBOX from:gbst.com")\
+                                             q=query)\
         .execute()
     messages = result.get('messages')
+    next_page_token = result.get('nextPageToken')
+    while next_page_token:
+        n_result = service.users().messages()\
+            .list(maxResults=maxResults, userId='me', q=query, pageToken=next_page_token)\
+            .execute()
+        n_messages = n_result.get('messages')
+        if not len(n_messages):
+            break
+        messages += n_messages
+        next_page_token = n_result.get('nextPageToken')
     # iterate through all the messages
     for msg in messages:
         # Get the message from its id
@@ -116,17 +126,17 @@ def get_email(service=None):
         logger.info(f'Subject: {subject}')
         if 'globaldb ---> taxanalyser (uat) copy for security' in subject:
             continue
-            # skip uat emails
+        # skip uat emails
+        body = parse_body(payload, service, msg)
         if subject == 'Tax Analyser Mercer Load (Production)' and 'sender' not in body.keys():
             # special email to skip
             logger.warning(f'Skipping email with no body for {subject}')
-        body = parse_body(payload, service, msg)
         logger.info(f'Body: {body}')
         body['subject'] = subject
         yield body
 
 
 if __name__ == '__main__':
-    for mail in get_email():
+    for mail in get_email(maxResults=200):
         print(mail)
         # get_email()
