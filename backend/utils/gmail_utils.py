@@ -6,8 +6,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from dashboard.utils import PACK_DIR
-from dashboard.definitions import logger
+from backend.utils import PACK_DIR
+from backend.definitions import logger
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']

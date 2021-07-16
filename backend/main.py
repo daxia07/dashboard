@@ -5,5 +5,5 @@ os.sys.path.insert(1, parent_dir)
 
 
 if __name__ == '__main__':
-    from dashboard.utils.gmail_utils import get_email
+    from backend.utils.gmail_utils import get_email
     get_email()
