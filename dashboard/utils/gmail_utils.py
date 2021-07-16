@@ -6,8 +6,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from utils import PACK_DIR
-from definitions import logger
+from dashboard.utils import PACK_DIR
+from dashboard.definitions import logger
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -114,15 +114,19 @@ def get_email(service=None):
         subject = parse_subject(headers)
         # Printing the subject, sender's email and message
         logger.info(f'Subject: {subject}')
+        if 'globaldb ---> taxanalyser (uat) copy for security' in subject:
+            continue
         body = parse_body(payload, service, msg)
         logger.info(f'Body: {body}')
+        # skip uat emails
         if subject == 'Tax Analyser Mercer Load (Production)' and 'sender' not in body.keys():
             # special email to skip
             logger.warning(f'Skipping email with no body for {subject}')
-            pass
         body['subject'] = subject
         yield body
 
 
 if __name__ == '__main__':
-    get_email()
+    for mail in get_email():
+        print(mail)
+        # get_email()
