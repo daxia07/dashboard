@@ -6,8 +6,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from task.utils import PACK_DIR
-from task.definitions import logger
+from dashboard.task.utils import PACK_DIR
+from dashboard.task.definitions import logger
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
@@ -141,4 +141,5 @@ def get_email(service=None, maxResults=200, query="is:unread label:INBOX from:gb
 if __name__ == '__main__':
     for mail in get_email():
         print(mail)
+        break
         # get_email()

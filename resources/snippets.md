@@ -23,25 +23,11 @@ def test_fetch_user_info():
     assert gmail_service
 ```
 
+
+### Note:
+Make sure that project dir in the path to run programs
 ```python
-import imaplib
-import email
-from email.header import decode_header
-import webbrowser
 import os
-
-# account credentials
-username = "qds.gbst@gmail.com"
-password = "pass"
-
-# create an IMAP4 class with SSL
-imap = imaplib.IMAP4_SSL('imap.gmail.com')
-# authenticate
-imap.login(username, password)
-
-status, messages = imap.select("INBOX")
-# number of top emails to fetch
-N = 3
-# total number of emails
-messages = int(messages[0])
+parent_dir = 'ROOT'
+os.sys.path.insert(1, parent_dir)
 ```
