@@ -29,5 +29,6 @@ Make sure that project dir in the path to run programs
 ```python
 import os
 parent_dir = 'ROOT'
-os.sys.path.insert(1, parent_dir)
+if parent_dir not in os.sys.path:
+    os.sys.path.insert(1, parent_dir)
 ```

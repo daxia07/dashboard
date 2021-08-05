@@ -1,8 +1,29 @@
 import os
+from dashboard.mails.gapi.gmail_utils import get_email
+from dashboard.mails.definitions import logger
+
+
+def rules():
+    # before time, should receive email
+    # no errors/exceptions
+    # task list
+    pass
+
+
+def refine(mail):
+    logger.info(f"Refining mail for {mail['subject']}")
+    # ticket, status, flag, service, client
+    if mail['subject'].startswith('INFO:'):
+        mail['flag'] = 'success'
+        return mail
+    # keep going
+    return
 
 
 def write_to_db(mail):
-    # write to db 
+    # write to db
+    # filter on subject, add tags, connect to jira ticket, update status
+    # create ticket for new event
     pass
 
 
@@ -18,14 +39,6 @@ def update_db():
 
 if __name__ == '__main__':
     parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    if parent_dir not in os.sys.path:
-        os.sys.path.insert(1, parent_dir)
-    try:
-        from dashboard.mails.gapi.gmail_utils import get_email
-        from dashboard.mails.definitions import logger
-    except ImportError as e:
-        print('Error while importing packages', e)
     for mail in get_email():
-        print(mail)
-        break
+        refine(mail)
     # get_email()
