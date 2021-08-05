@@ -21,8 +21,8 @@ if __name__ == '__main__':
     if parent_dir not in os.sys.path:
         os.sys.path.insert(1, parent_dir)
     try:
-        from dashboard.task.utils.gmail_utils import get_email
-        from dashboard.task.definitions import logger
+        from dashboard.mails.gapi.gmail_utils import get_email
+        from dashboard.mails.definitions import logger
     except ImportError as e:
         print('Error while importing packages', e)
     for mail in get_email():
